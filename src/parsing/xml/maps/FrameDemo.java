@@ -31,11 +31,61 @@
 
 package parsing.xml.maps;
 
+import parsing.model.Node;
+import parsing.model.Way;
+
 import javax.swing.*;
 import java.awt.*;
+import java.util.*;
+import java.util.List;
 
 /* FrameDemo.java requires no other files. */
 public class FrameDemo {
+
+    private final List<Way> goodWays;
+    private final Map<Long, Node> nodes;
+
+    public FrameDemo(List<Way> goodWays, Map<Long, Node> nodes) {
+        this.goodWays = goodWays;
+        this.nodes = nodes;
+    }
+
+    public void showResult() {
+        JFrame frame = new JFrame("FrameDemo");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JPanel panel = new JPanel(new GridBagLayout());
+        JScrollPane jScrollPane = new JScrollPane(panel);
+        jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        frame.getContentPane().add(jScrollPane);
+
+        int indexX = 0, indexY = 0;
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.anchor=GridBagConstraints.WEST;
+        c.gridx = indexX;//set the x location of the grid for the next component
+        c.gridy = indexY;//set the y location of the grid for the next component
+        for (Way way : goodWays){
+            indexX = 0;
+            c.gridx = indexX;
+            JLabel waylabel = new JLabel(way.toString());
+            panel.add(waylabel, c);
+            indexX = 1;
+            c.gridx = indexX;
+
+            for (long id : way.getNodeIds()){
+                JLabel nodeLabel = new JLabel(nodes.get(id).toString());
+                panel.add(nodeLabel, c);
+                indexY++;
+                c.gridy = indexY;
+            }
+        }
+
+        frame.pack();
+        frame.setVisible(true);
+    }
+
     /**
      * Create the GUI and show it.  For thread safety,
      * this method should be invoked from the
@@ -47,7 +97,7 @@ public class FrameDemo {
         JFrame frame = new JFrame("FrameDemo");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JPanel panel = new JPanel();
+        JPanel panel = new JPanel(new GridBagLayout());
         JScrollPane jScrollPane = new JScrollPane(panel);
         jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -58,8 +108,16 @@ public class FrameDemo {
         emptyLabelA.setPreferredSize(new Dimension(175, 100));
         JLabel emptyLabelB = new JLabel("b");
         emptyLabelB.setPreferredSize(new Dimension(175, 100));
-        panel.add(emptyLabelA);
-        panel.add(emptyLabelB);
+
+
+        GridBagConstraints c = new GridBagConstraints();
+
+        c.gridx = 0;//set the x location of the grid for the next component
+        c.gridy = 0;//set the y location of the grid for the next component
+
+        panel.add(emptyLabelA, c);
+        c.gridy = 1;
+        panel.add(emptyLabelB, c);
 
         //Display the window.
         frame.pack();

@@ -9,6 +9,5 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="PROVIDED" name="AppEngine Dev 1.9.32" level="application_server_libraries" />
     <orderEntry type="library" name="javax.json-api-1.0" level="project" />
-    <orderEntry type="library" name="javax.json-1.0.4" level="project" />
   </component>
 </module>
