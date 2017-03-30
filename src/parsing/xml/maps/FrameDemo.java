@@ -69,6 +69,10 @@ public class FrameDemo {
         for (Way way : goodWays){
             indexX = 0;
             c.gridx = indexX;
+            JLabel space = new JLabel("===================");
+            panel.add(space, c);
+            indexY++;
+            c.gridy = indexY;
             JLabel waylabel = new JLabel(way.toString());
             panel.add(waylabel, c);
             indexX = 1;

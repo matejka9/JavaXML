@@ -23,10 +23,6 @@ public class XMLParsing {
     List<Way> goodWays = new ArrayList<Way>();
     Map<Long, parsing.model.Node> nodes = new HashMap<Long, parsing.model.Node>();
 
-    public static void main(String[] args) throws ParserConfigurationException, IOException, SAXException {
-        new XMLParsing().parse();
-    }
-
     public void parse() throws ParserConfigurationException, IOException, SAXException {
         File inputFile = new File("map.xml");
         DocumentBuilderFactory dbFactory

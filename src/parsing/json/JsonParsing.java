@@ -12,7 +12,7 @@ public class JsonParsing {
 
     private static final String inputFile = "jsonTestFile.json";
 
-    static private void streamApi() throws FileNotFoundException {
+    public static void streamApi() throws FileNotFoundException {
         JsonParser parser = null;
         InputStream targetStream = null;
         try {
@@ -91,7 +91,7 @@ public class JsonParsing {
         }
     }
 
-    static private void objectModelApi() throws FileNotFoundException {
+    public static void objectModelApi() throws FileNotFoundException {
         JsonReader jsonReader = null;
         InputStream targetStream = null;
         try {
@@ -144,10 +144,5 @@ public class JsonParsing {
                 }
             }
         }
-    }
-
-    public static void main(String[] args) throws FileNotFoundException {
-        streamApi();
-        objectModelApi();
     }
 }

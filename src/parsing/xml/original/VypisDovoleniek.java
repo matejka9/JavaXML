@@ -7,7 +7,11 @@ import javax.xml.parsers.SAXParserFactory;
 
 public class VypisDovoleniek {
 
-    private static final String fileName = "dovolenky.xml";
+    public static final String fileName = "dovolenky.xml";
+
+    public static void main(){
+        main(new String[] {fileName});
+    }
 
     public static void main(String[] args){
         String fileName = null;

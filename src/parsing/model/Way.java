@@ -26,7 +26,7 @@ public class Way {
     public String toString() {
         return "Way{" +
                 "id=" + id +
-                ", nodeIds=" + nodeIds +
+//                ", nodeIds=" + nodeIds +
                 '}';
     }
 }
