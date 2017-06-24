@@ -41,13 +41,19 @@ import java.util.List;
 
 /* FrameDemo.java requires no other files. */
 public class FrameDemo {
+    private static final int MAXSIZE = 1000;
 
     private final List<Way> goodWays;
     private final Map<Long, Node> nodes;
+    private Map<Long, CanvasPoint> points;
+
+    private Double maxLat = null, minLat = null, maxLng = null, minLng = null;
+    private int height, width;
 
     public FrameDemo(List<Way> goodWays, Map<Long, Node> nodes) {
         this.goodWays = goodWays;
         this.nodes = nodes;
+        this.points = new HashMap<>();
     }
 
     public void showResult() {
@@ -88,6 +94,80 @@ public class FrameDemo {
 
         frame.pack();
         frame.setVisible(true);
+    }
+
+
+    public void showMap() {
+        findExtrems();
+        calculateMapSize();
+        transofrmToPoints();
+        drawPoints();
+    }
+
+    private void drawPoints() {
+        EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+                }
+
+                JFrame frame = new JFrame("Testing");
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setLayout(new BorderLayout());
+                frame.add(new MapPane());
+                frame.pack();
+                frame.setLocationRelativeTo(null);
+                frame.setVisible(true);
+            }
+        });
+    }
+
+    private void transofrmToPoints() {
+        points = new HashMap<>();
+        for (Map.Entry<Long, Node> entry: nodes.entrySet()) {
+            points.put(entry.getKey(), new CanvasPoint(entry.getValue()));
+        }
+    }
+
+    private void calculateMapSize() {
+        double width = Math.abs(maxLng - minLng);
+        double height = Math.abs(maxLat - minLat);
+        if (width > height) {
+            this.width = MAXSIZE;
+            this.height = calculate(height, width);
+        } else {
+            this.height = MAXSIZE;
+            this.width = calculate(width, height);
+        }
+    }
+
+    private int calculate(double first, double second) {
+        return (int) ((first / second) * MAXSIZE);
+    }
+
+    private void findExtrems() {
+        for (Node node: nodes.values()){
+            minLat = checkLower(node.getLat(), minLat);
+            minLng = checkLower(node.getLon(), minLng);
+            maxLng = checkHigher(node.getLon(), maxLng);
+            maxLat = checkHigher(node.getLat(), maxLat);
+        }
+    }
+
+    private double checkLower(Double nodeValue, Double lowest){
+        if (lowest == null || nodeValue < lowest) {
+            return nodeValue;
+        }
+        return lowest;
+    }
+
+    private double checkHigher(Double nodeValue, Double higher){
+        if (higher == null || nodeValue > higher) {
+            return nodeValue;
+        }
+        return higher;
     }
 
     /**
@@ -137,4 +217,56 @@ public class FrameDemo {
             }
         });
     }
+
+    class CanvasPoint {
+        private int x, y;
+        private long id;
+
+        CanvasPoint(Node node) {
+            this.x = calculateLngToX(node.getLon());
+            this.y = calculateLatToY(node.getLat());
+            this.id = node.getId();
+        }
+
+        private int calculateLatToY(double lat) {
+            double l = maxLat - minLat;
+            double d = lat - minLat;
+            double dl = d / l;
+            return (int) (dl * height);
+        }
+
+        private int calculateLngToX(double lng) {
+            double l = maxLng - minLng;
+            double d = lng - minLng;
+            double dl = d / l;
+            return (int) (dl * width);
+        }
+    }
+
+    class MapPane extends JPanel{
+
+        @Override
+        public Dimension getPreferredSize() {
+            return new Dimension(width, height);
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.setColor(Color.WHITE);
+            g.fillRect(0, 0, WIDTH, HEIGHT);
+            g.setColor(Color.BLACK);
+            for (Way way: goodWays) {
+                List<Long> nodes = way.getNodeIds();
+                CanvasPoint first = points.get(nodes.get(0));
+                for (int index = 1; index < nodes.size(); index++){
+                    CanvasPoint second = points.get(nodes.get(index));
+                    g.drawLine(first.x, first.y, second.x, second.y);
+                    first = second;
+                }
+            }
+        }
+    }
 }
+
+

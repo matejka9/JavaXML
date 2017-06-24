@@ -42,7 +42,7 @@ public class XMLParsing {
     }
 
     private void zobrazCesty() {
-        new FrameDemo(goodWays, nodes).showResult();
+        new FrameDemo(goodWays, nodes).showMap();
     }
 
     private void getGoodNodes(NodeList nodes) {
